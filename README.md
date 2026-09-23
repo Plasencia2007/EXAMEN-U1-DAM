@@ -1,31 +1,74 @@
-This is a Kotlin Multiplatform project targeting Android, iOS.
+# BiblioAndes
 
-* [/iosApp](./iosApp/iosApp) contains an iOS application. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+Examen Parcial — Unidad 1, Versión B — Desarrollo de Aplicaciones Móviles (UPeU)
+Estudiante: **Plasencia Valdez** · Repositorio: `EXAMEN-U1-DAM`
 
-* [/shared](./shared/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./shared/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./shared/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./shared/src/jvmMain/kotlin)
-    folder is the appropriate location.
+Aplicación KMP (Android + iOS) para consultar el catálogo de la biblioteca
+BiblioAndes y gestionar los préstamos de un estudiante. Todos los datos
+provienen de una fuente simulada en memoria: no consume servicios web ni
+bases de datos (Ktor, Room, SQLDelight, Retrofit, etc. están fuera de esta
+versión, tal como exige el enunciado).
 
-### Running the apps
+## Cómo ejecutar
 
-Use the run configurations provided by the run widget in your IDE's toolbar. You can also use these commands and options:
+- **Android**: abrir el proyecto en Android Studio y correr la configuración
+  `androidApp`, o desde consola: `./gradlew :androidApp:installDebug`.
+- **iOS**: abrir `iosApp/iosApp.xcodeproj` en Xcode y ejecutar sobre un
+  simulador. También se puede verificar solo la compilación del módulo común
+  con `./gradlew :shared:compileKotlinIosSimulatorArm64`.
 
-- Android app: `./gradlew :androidApp:assembleDebug`
-- iOS app: open the [/iosApp](./iosApp) directory in Xcode and run it from there.
+## Arquitectura
 
-### Running tests
+Clean Architecture + MVVM, con el dominio y la mayor parte de la
+presentación viviendo en `commonMain` (compartido entre Android e iOS):
 
-Use the run button in your IDE's editor gutter, or run tests using Gradle tasks:
+```
+shared/src/commonMain/kotlin/pe/upeu/biblioandes/
+├── domain/
+│   ├── model/          Libro, Prestamo, EstadoPrestamo (sealed class), Estudiante
+│   ├── repository/     BibliotecaRepository (solo la interfaz)
+│   └── usecase/        ObtenerCatalogoUseCase, SolicitarPrestamoUseCase,
+│                        ObtenerPrestamosUseCase, CalcularEstadoPrestamoUseCase
+├── data/
+│   ├── local/           DatosSimulados (estudiante, categorías, 12 libros, 5 préstamos)
+│   └── repository/       BibliotecaRepositoryFake (retardo simulado de 800 ms,
+│                          bandera de error solo para el catálogo)
+├── presentation/
+│   ├── inicio/, catalogo/, detalle/, prestamos/, perfil/   ViewModel + UiState + Screen
+│   ├── navigation/       Screen (rutas tipadas), BackStack propio, AppNavHost, BackHandler
+│   └── theme/            Color, Type, BiblioAndesTheme (Material 3, claro/oscuro)
+└── di/                   AppModule (Koin: dataModule, domainModule, presentationModule)
+```
 
-- Android tests: `./gradlew :shared:testAndroidHostTest`
-- iOS tests: `./gradlew :shared:iosSimulatorArm64Test`
+**Reglas de negocio** (RN-01 a RN-04) viven únicamente en `domain/usecase`,
+nunca en un composable:
 
----
+- RN-01: máximo 3 préstamos Activos simultáneos (`SolicitarPrestamoUseCase`).
+- RN-02: no se puede solicitar un libro con 0 ejemplares disponibles.
+- RN-03: todo préstamo dura 7 días; el estado se recalcula contra la fecha
+  actual en `CalcularEstadoPrestamoUseCase` (Activo/Vencido).
+- RN-04: un estudiante con un préstamo Vencido no puede solicitar otro libro.
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+**Decisiones técnicas destacadas**:
+
+- Navegación con una pila propia (`BackStack`) en vez de una librería externa,
+  para cubrir literalmente `AppNavHost.kt` / `Destinos.kt` sin depender de
+  Navigation Compose. El botón atrás del sistema se resuelve con un
+  `BackHandler` `expect`/`actual` (real en Android vía `activity-compose`,
+  no-op en iOS).
+- Cada pantalla con datos tiene sus 3–4 estados de interfaz (carga, contenido,
+  vacío y, solo en catálogo, error) modelados como `sealed interface` en su
+  propio `UiState`.
+- El estado de error del catálogo se simula con una bandera en
+  `BibliotecaRepositoryFake`, expuesta a Koin además de la interfaz de
+  dominio, para que únicamente la pantalla de catálogo pueda accionarla.
+- Tema Material 3 propio (paleta terracota/verde-teal/rosa, inspirada en
+  libros y textiles andinos) con modo claro/oscuro conmutable desde Perfil
+  (RF-06) y aplicado de inmediato a toda la app.
+
+## Flujo de Git
+
+`main` solo recibe fusiones de `develop`. Cada funcionalidad se desarrolló en
+una rama `feature/<funcionalidad>-plasencia`, con commits pequeños en español
+(prefijos `feat`, `fix`, `refactor`, `docs`) y fusión `--no-ff` hacia
+`develop`. Historial completo: `git log --graph --oneline --all`.
