@@ -4,19 +4,17 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import pe.upeu.biblioandes.presentation.catalogo.CatalogoScreen
 import pe.upeu.biblioandes.presentation.detalle.DetalleLibroScreen
 import pe.upeu.biblioandes.presentation.inicio.InicioScreen
+import pe.upeu.biblioandes.presentation.perfil.PerfilScreen
 import pe.upeu.biblioandes.presentation.prestamos.PrestamosScreen
 
 /**
@@ -50,7 +48,12 @@ class BackStack {
 fun rememberBackStack(): BackStack = remember { BackStack() }
 
 @Composable
-fun AppNavHost(backStack: BackStack, modifier: Modifier = Modifier) {
+fun AppNavHost(
+    backStack: BackStack,
+    modifier: Modifier = Modifier,
+    temaOscuro: Boolean = false,
+    onCambiarTema: (Boolean) -> Unit = {}
+) {
     BackHandler(enabled = backStack.puedeRetroceder) { backStack.retroceder() }
 
     AnimatedContent(
@@ -70,7 +73,11 @@ fun AppNavHost(backStack: BackStack, modifier: Modifier = Modifier) {
                 onLibroSeleccionado = { libro -> backStack.navegarA(Screen.DetalleLibro(libro.id)) }
             )
             is Screen.Prestamos -> PrestamosScreen(modifier = Modifier.fillMaxSize())
-            is Screen.Perfil -> PantallaPendiente("Perfil")
+            is Screen.Perfil -> PerfilScreen(
+                modifier = Modifier.fillMaxSize(),
+                temaOscuro = temaOscuro,
+                onCambiarTema = onCambiarTema
+            )
             is Screen.DetalleLibro -> DetalleLibroScreen(
                 libroId = pantalla.libroId,
                 modifier = Modifier.fillMaxSize()
@@ -79,9 +86,3 @@ fun AppNavHost(backStack: BackStack, modifier: Modifier = Modifier) {
     }
 }
 
-@Composable
-private fun PantallaPendiente(nombre: String) {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text("Pantalla $nombre (en construcción)")
-    }
-}

@@ -2,8 +2,7 @@ package pe.upeu.biblioandes
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DarkMode
-import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -22,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinContext
 import pe.upeu.biblioandes.presentation.navigation.AppNavHost
 import pe.upeu.biblioandes.presentation.navigation.DESTINOS
+import pe.upeu.biblioandes.presentation.navigation.Screen
 import pe.upeu.biblioandes.presentation.navigation.rememberBackStack
 import pe.upeu.biblioandes.presentation.theme.BiblioAndesTheme
 
@@ -38,11 +38,8 @@ fun App() = KoinContext {
                 TopAppBar(
                     title = { Text(backStack.actual.titulo) },
                     actions = {
-                        IconButton(onClick = { darkTheme = !darkTheme }) {
-                            Icon(
-                                imageVector = if (darkTheme) Icons.Default.LightMode else Icons.Default.DarkMode,
-                                contentDescription = "Cambiar tema"
-                            )
+                        IconButton(onClick = { backStack.navegarA(Screen.Perfil) }) {
+                            Icon(Icons.Default.AccountCircle, contentDescription = "Perfil")
                         }
                     }
                 )
@@ -61,7 +58,12 @@ fun App() = KoinContext {
                 }
             }
         ) { padding ->
-            AppNavHost(backStack = backStack, modifier = Modifier.padding(padding))
+            AppNavHost(
+                backStack = backStack,
+                modifier = Modifier.padding(padding),
+                temaOscuro = darkTheme,
+                onCambiarTema = { darkTheme = it }
+            )
         }
     }
 }
