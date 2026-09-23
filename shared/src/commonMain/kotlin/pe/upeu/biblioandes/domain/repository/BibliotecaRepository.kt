@@ -14,4 +14,7 @@ interface BibliotecaRepository {
     suspend fun listarCatalogo(): List<Libro>
     suspend fun listarPrestamos(): List<Prestamo>
     suspend fun registrarPrestamo(prestamo: Prestamo): Prestamo
+
+    /** Marca un préstamo como devuelto hoy y repone el ejemplar en el catálogo. */
+    suspend fun devolverPrestamo(prestamoId: Int): Prestamo
 }
