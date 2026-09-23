@@ -59,6 +59,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.datetime)
             // api: initKoin() y el expect val platformModule exponen tipos de koin-core
             // en su firma publica; androidApp e iosApp los consumen directamente.
             api(libs.koin.core)
