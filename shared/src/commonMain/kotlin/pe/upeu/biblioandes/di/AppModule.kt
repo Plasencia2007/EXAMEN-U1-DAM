@@ -7,6 +7,7 @@ import org.koin.dsl.module
 import pe.upeu.biblioandes.data.repository.BibliotecaRepositoryFake
 import pe.upeu.biblioandes.domain.repository.BibliotecaRepository
 import pe.upeu.biblioandes.domain.usecase.CalcularEstadoPrestamoUseCase
+import pe.upeu.biblioandes.domain.usecase.DevolverPrestamoUseCase
 import pe.upeu.biblioandes.domain.usecase.ObtenerCatalogoUseCase
 import pe.upeu.biblioandes.domain.usecase.ObtenerPrestamosUseCase
 import pe.upeu.biblioandes.domain.usecase.SolicitarPrestamoUseCase
@@ -28,13 +29,14 @@ val domainModule = module {
     factory { ObtenerCatalogoUseCase(get()) }
     factory { ObtenerPrestamosUseCase(get(), get()) }
     factory { SolicitarPrestamoUseCase(get(), get()) }
+    factory { DevolverPrestamoUseCase(get()) }
 }
 
 /** Se completa en cada rama de presentación con los ViewModel de esa pantalla. */
 val presentationModule = module {
     viewModel { CatalogoViewModel(get(), get()) }
     viewModel { (libroId: Int) -> DetalleLibroViewModel(libroId, get(), get()) }
-    viewModel { PrestamosViewModel(get()) }
+    viewModel { PrestamosViewModel(get(), get()) }
     viewModel { InicioViewModel(get(), get()) }
 }
 

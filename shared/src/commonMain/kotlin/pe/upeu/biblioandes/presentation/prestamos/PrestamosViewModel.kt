@@ -8,17 +8,23 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import pe.upeu.biblioandes.domain.model.EstadoPrestamo
 import pe.upeu.biblioandes.domain.model.Prestamo
+import pe.upeu.biblioandes.domain.usecase.DevolverPrestamoUseCase
 import pe.upeu.biblioandes.domain.usecase.ObtenerPrestamosUseCase
 
-/** ViewModel de "Mis préstamos" (RF-04): orden por devolución más próxima y filtro por estado. */
+/** ViewModel de "Mis préstamos" (RF-04): orden por devolución más próxima, filtro por estado y devolución manual. */
 class PrestamosViewModel(
-    private val obtenerPrestamos: ObtenerPrestamosUseCase
+    private val obtenerPrestamos: ObtenerPrestamosUseCase,
+    private val devolverPrestamo: DevolverPrestamoUseCase
 ) : ViewModel() {
 
     private var todosLosPrestamos: List<Prestamo> = emptyList()
     private var filtroSeleccionado: FiltroEstado = FiltroEstado.TODOS
 
     var uiState: PrestamosUiState by mutableStateOf(PrestamosUiState.Cargando)
+        private set
+
+    /** Id del préstamo que se está devolviendo, para deshabilitar su botón mientras dura la operación. */
+    var prestamoIdEnProceso: Int? by mutableStateOf(null)
         private set
 
     init {
@@ -30,6 +36,16 @@ class PrestamosViewModel(
     fun seleccionarFiltro(filtro: FiltroEstado) {
         filtroSeleccionado = filtro
         publicarContenidoFiltrado()
+    }
+
+    fun devolver(prestamoId: Int) {
+        if (prestamoIdEnProceso != null) return
+        prestamoIdEnProceso = prestamoId
+        viewModelScope.launch {
+            devolverPrestamo(prestamoId)
+            prestamoIdEnProceso = null
+            cargar()
+        }
     }
 
     private fun cargar() {
