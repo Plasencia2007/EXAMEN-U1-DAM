@@ -67,7 +67,11 @@ class PrestamosViewModel(
         }
         uiState = PrestamosUiState.Contenido(
             filtroSeleccionado = filtroSeleccionado,
-            prestamos = prestamosFiltrados
+            prestamos = prestamosFiltrados,
+            totalCount = todosLosPrestamos.size,
+            activoCount = todosLosPrestamos.count { it.estado is EstadoPrestamo.Activo },
+            vencidoCount = todosLosPrestamos.count { it.estado is EstadoPrestamo.Vencido },
+            devueltoCount = todosLosPrestamos.count { it.estado is EstadoPrestamo.Devuelto }
         )
     }
 }
