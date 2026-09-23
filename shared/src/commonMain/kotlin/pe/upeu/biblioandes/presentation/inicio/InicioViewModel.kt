@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import pe.upeu.biblioandes.domain.model.EstadoPrestamo
 import pe.upeu.biblioandes.domain.repository.BibliotecaRepository
+import pe.upeu.biblioandes.domain.usecase.ObtenerCatalogoUseCase
 import pe.upeu.biblioandes.domain.usecase.ObtenerPrestamosUseCase
 
 /**
@@ -17,6 +18,7 @@ import pe.upeu.biblioandes.domain.usecase.ObtenerPrestamosUseCase
  */
 class InicioViewModel(
     private val repository: BibliotecaRepository,
+    private val obtenerCatalogo: ObtenerCatalogoUseCase,
     private val obtenerPrestamos: ObtenerPrestamosUseCase
 ) : ViewModel() {
 
@@ -33,10 +35,18 @@ class InicioViewModel(
         uiState = InicioUiState.Cargando
         viewModelScope.launch {
             val estudiante = repository.obtenerEstudiante()
-            val proximoAVencer = obtenerPrestamos()
-                .filter { it.estado is EstadoPrestamo.Activo }
-                .minByOrNull { it.fechaLimite }
-            uiState = InicioUiState.Contenido(estudiante, proximoAVencer)
+            val libros = obtenerCatalogo()
+            val prestamos = obtenerPrestamos()
+            val activos = prestamos.filter { it.estado is EstadoPrestamo.Activo }
+            val vencidos = prestamos.filter { it.estado is EstadoPrestamo.Vencido }
+            uiState = InicioUiState.Contenido(
+                estudiante = estudiante,
+                fechaHoy = fechaDeHoyFormateada(),
+                proximoAVencer = activos.minByOrNull { it.fechaLimite },
+                prestamosVencidos = vencidos,
+                totalLibros = libros.size,
+                prestamosActivosCount = activos.size
+            )
         }
     }
 }

@@ -9,7 +9,11 @@ sealed interface InicioUiState {
 
     data class Contenido(
         val estudiante: Estudiante,
+        val fechaHoy: String,
         /** El préstamo Activo cuya devolución vence primero, si tiene alguno. */
-        val proximoAVencer: Prestamo?
+        val proximoAVencer: Prestamo?,
+        val prestamosVencidos: List<Prestamo>,
+        val totalLibros: Int,
+        val prestamosActivosCount: Int
     ) : InicioUiState
 }

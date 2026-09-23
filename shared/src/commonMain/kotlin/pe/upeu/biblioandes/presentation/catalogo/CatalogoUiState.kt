@@ -10,7 +10,11 @@ sealed interface CatalogoUiState {
         val categorias: List<String>,
         val categoriaSeleccionada: String?,
         val textoBusqueda: String,
-        val libros: List<Libro>
+        val libros: List<Libro>,
+        /** Total sin filtrar, para el chip "Todas" (independiente de la búsqueda). */
+        val totalLibros: Int,
+        /** Conteo por categoría sin filtrar, para el número de cada chip. */
+        val conteoPorCategoria: Map<String, Int>
     ) : CatalogoUiState {
         val estaVacio: Boolean get() = libros.isEmpty()
     }
