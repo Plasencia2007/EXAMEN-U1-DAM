@@ -11,6 +11,7 @@ import pe.upeu.biblioandes.domain.usecase.ObtenerCatalogoUseCase
 import pe.upeu.biblioandes.domain.usecase.ObtenerPrestamosUseCase
 import pe.upeu.biblioandes.domain.usecase.SolicitarPrestamoUseCase
 import pe.upeu.biblioandes.presentation.catalogo.CatalogoViewModel
+import pe.upeu.biblioandes.presentation.detalle.DetalleLibroViewModel
 
 val dataModule = module {
     // Se expone también el tipo concreto para que la pantalla de catálogo
@@ -30,6 +31,7 @@ val domainModule = module {
 /** Se completa en cada rama de presentación con los ViewModel de esa pantalla. */
 val presentationModule = module {
     viewModel { CatalogoViewModel(get(), get()) }
+    viewModel { (libroId: Int) -> DetalleLibroViewModel(libroId, get(), get()) }
 }
 
 fun initKoin(config: KoinAppDeclaration? = null) {
