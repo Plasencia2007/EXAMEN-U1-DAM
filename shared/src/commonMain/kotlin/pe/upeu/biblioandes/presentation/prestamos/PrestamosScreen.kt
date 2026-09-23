@@ -18,6 +18,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,7 +37,9 @@ fun PrestamosScreen(
         is PrestamosUiState.Contenido -> PrestamosContenido(
             modifier = modifier,
             estado = estado,
-            onFiltroSeleccionado = viewModel::seleccionarFiltro
+            prestamoIdEnProceso = viewModel.prestamoIdEnProceso,
+            onFiltroSeleccionado = viewModel::seleccionarFiltro,
+            onDevolver = viewModel::devolver
         )
     }
 }
@@ -45,7 +48,9 @@ fun PrestamosScreen(
 private fun PrestamosContenido(
     modifier: Modifier,
     estado: PrestamosUiState.Contenido,
-    onFiltroSeleccionado: (FiltroEstado) -> Unit
+    prestamoIdEnProceso: Int?,
+    onFiltroSeleccionado: (FiltroEstado) -> Unit,
+    onDevolver: (Int) -> Unit
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         LazyRow(
@@ -70,7 +75,11 @@ private fun PrestamosContenido(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(estado.prestamos, key = { it.id }) { prestamo ->
-                    TarjetaPrestamo(prestamo)
+                    TarjetaPrestamo(
+                        prestamo = prestamo,
+                        enDevolucion = prestamo.id == prestamoIdEnProceso,
+                        onDevolver = { onDevolver(prestamo.id) }
+                    )
                 }
             }
         }
@@ -78,7 +87,9 @@ private fun PrestamosContenido(
 }
 
 @Composable
-private fun TarjetaPrestamo(prestamo: Prestamo) {
+private fun TarjetaPrestamo(prestamo: Prestamo, enDevolucion: Boolean, onDevolver: () -> Unit) {
+    val puedeDevolver = prestamo.estado is EstadoPrestamo.Activo || prestamo.estado is EstadoPrestamo.Vencido
+
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(prestamo.libro.titulo, style = MaterialTheme.typography.titleMedium)
@@ -93,6 +104,16 @@ private fun TarjetaPrestamo(prestamo: Prestamo) {
                 color = colorEstado(prestamo.estado),
                 modifier = Modifier.padding(top = 4.dp)
             )
+
+            if (puedeDevolver) {
+                TextButton(
+                    onClick = onDevolver,
+                    enabled = !enDevolucion,
+                    modifier = Modifier.padding(top = 4.dp)
+                ) {
+                    Text(if (enDevolucion) "Registrando devolución..." else "Devolver")
+                }
+            }
         }
     }
 }
