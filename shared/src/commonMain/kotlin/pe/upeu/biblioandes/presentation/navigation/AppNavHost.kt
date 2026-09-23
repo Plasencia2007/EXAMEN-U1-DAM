@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import pe.upeu.biblioandes.presentation.catalogo.CatalogoScreen
 import pe.upeu.biblioandes.presentation.detalle.DetalleLibroScreen
+import pe.upeu.biblioandes.presentation.inicio.InicioScreen
 import pe.upeu.biblioandes.presentation.prestamos.PrestamosScreen
 
 /**
@@ -59,7 +60,11 @@ fun AppNavHost(backStack: BackStack, modifier: Modifier = Modifier) {
         transitionSpec = { fadeIn() togetherWith fadeOut() }
     ) { pantalla ->
         when (pantalla) {
-            is Screen.Inicio -> PantallaPendiente("Inicio")
+            is Screen.Inicio -> InicioScreen(
+                modifier = Modifier.fillMaxSize(),
+                onIrACatalogo = { backStack.irARaiz(Screen.Catalogo) },
+                onIrAPrestamos = { backStack.irARaiz(Screen.Prestamos) }
+            )
             is Screen.Catalogo -> CatalogoScreen(
                 modifier = Modifier.fillMaxSize(),
                 onLibroSeleccionado = { libro -> backStack.navegarA(Screen.DetalleLibro(libro.id)) }
