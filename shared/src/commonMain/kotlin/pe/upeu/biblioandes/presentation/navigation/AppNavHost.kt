@@ -65,14 +65,23 @@ fun AppNavHost(
         when (pantalla) {
             is Screen.Inicio -> InicioScreen(
                 modifier = Modifier.fillMaxSize(),
+                temaOscuro = temaOscuro,
+                onCambiarTema = onCambiarTema,
                 onIrACatalogo = { backStack.irARaiz(Screen.Catalogo) },
-                onIrAPrestamos = { backStack.irARaiz(Screen.Prestamos) }
+                onIrAPrestamos = { backStack.irARaiz(Screen.Prestamos) },
+                onIrAPerfil = { backStack.navegarA(Screen.Perfil) }
             )
             is Screen.Catalogo -> CatalogoScreen(
                 modifier = Modifier.fillMaxSize(),
+                temaOscuro = temaOscuro,
+                onCambiarTema = onCambiarTema,
                 onLibroSeleccionado = { libro -> backStack.navegarA(Screen.DetalleLibro(libro.id)) }
             )
-            is Screen.Prestamos -> PrestamosScreen(modifier = Modifier.fillMaxSize())
+            is Screen.Prestamos -> PrestamosScreen(
+                modifier = Modifier.fillMaxSize(),
+                temaOscuro = temaOscuro,
+                onCambiarTema = onCambiarTema
+            )
             is Screen.Perfil -> PerfilScreen(
                 modifier = Modifier.fillMaxSize(),
                 temaOscuro = temaOscuro,
@@ -80,7 +89,9 @@ fun AppNavHost(
             )
             is Screen.DetalleLibro -> DetalleLibroScreen(
                 libroId = pantalla.libroId,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                onVolver = { backStack.retroceder() },
+                onVerPrestamos = { backStack.irARaiz(Screen.Prestamos) }
             )
         }
     }

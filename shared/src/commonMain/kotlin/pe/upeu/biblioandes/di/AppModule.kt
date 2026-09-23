@@ -37,7 +37,7 @@ val presentationModule = module {
     viewModel { CatalogoViewModel(get(), get()) }
     viewModel { (libroId: Int) -> DetalleLibroViewModel(libroId, get(), get()) }
     viewModel { PrestamosViewModel(get(), get()) }
-    viewModel { InicioViewModel(get(), get()) }
+    viewModel { InicioViewModel(get(), get(), get()) }
 }
 
 fun initKoin(config: KoinAppDeclaration? = null) {

@@ -7,98 +7,60 @@ import androidx.compose.material3.Shapes
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.unit.dp
 
-private val LightColors: ColorScheme = lightColorScheme(
-    primary = BALibroPrimaryLight,
-    onPrimary = BALibroOnPrimaryLight,
-    primaryContainer = BALibroPrimaryContainerLight,
-    onPrimaryContainer = BALibroOnPrimaryContainerLight,
-    secondary = BALibroSecondaryLight,
-    onSecondary = BALibroOnSecondaryLight,
-    secondaryContainer = BALibroSecondaryContainerLight,
-    onSecondaryContainer = BALibroOnSecondaryContainerLight,
-    tertiary = BALibroTertiaryLight,
-    onTertiary = BALibroOnTertiaryLight,
-    tertiaryContainer = BALibroTertiaryContainerLight,
-    onTertiaryContainer = BALibroOnTertiaryContainerLight,
-    error = BALibroErrorLight,
-    onError = BALibroOnErrorLight,
-    errorContainer = BALibroErrorContainerLight,
-    onErrorContainer = BALibroOnErrorContainerLight,
-    background = BALibroBackgroundLight,
-    onBackground = BALibroOnBackgroundLight,
-    surface = BALibroSurfaceLight,
-    onSurface = BALibroOnSurfaceLight,
-    surfaceVariant = BALibroSurfaceVariantLight,
-    onSurfaceVariant = BALibroOnSurfaceVariantLight,
-    outline = BALibroOutlineLight,
-    outlineVariant = BALibroOutlineVariantLight,
-    scrim = BALibroScrimLight,
-    inverseSurface = BALibroInverseSurfaceLight,
-    inverseOnSurface = BALibroInverseOnSurfaceLight,
-    inversePrimary = BALibroInversePrimaryLight,
-    surfaceDim = BALibroSurfaceDimLight,
-    surfaceBright = BALibroSurfaceBrightLight,
-    surfaceContainerLowest = BALibroSurfaceContainerLowestLight,
-    surfaceContainerLow = BALibroSurfaceContainerLowLight,
-    surfaceContainer = BALibroSurfaceContainerLight,
-    surfaceContainerHigh = BALibroSurfaceContainerHighLight,
-    surfaceContainerHighest = BALibroSurfaceContainerHighestLight
-)
-
-private val DarkColors: ColorScheme = darkColorScheme(
-    primary = BALibroPrimaryDark,
-    onPrimary = BALibroOnPrimaryDark,
-    primaryContainer = BALibroPrimaryContainerDark,
-    onPrimaryContainer = BALibroOnPrimaryContainerDark,
-    secondary = BALibroSecondaryDark,
-    onSecondary = BALibroOnSecondaryDark,
-    secondaryContainer = BALibroSecondaryContainerDark,
-    onSecondaryContainer = BALibroOnSecondaryContainerDark,
-    tertiary = BALibroTertiaryDark,
-    onTertiary = BALibroOnTertiaryDark,
-    tertiaryContainer = BALibroTertiaryContainerDark,
-    onTertiaryContainer = BALibroOnTertiaryContainerDark,
-    error = BALibroErrorDark,
-    onError = BALibroOnErrorDark,
-    errorContainer = BALibroErrorContainerDark,
-    onErrorContainer = BALibroOnErrorContainerDark,
-    background = BALibroBackgroundDark,
-    onBackground = BALibroOnBackgroundDark,
-    surface = BALibroSurfaceDark,
-    onSurface = BALibroOnSurfaceDark,
-    surfaceVariant = BALibroSurfaceVariantDark,
-    onSurfaceVariant = BALibroOnSurfaceVariantDark,
-    outline = BALibroOutlineDark,
-    outlineVariant = BALibroOutlineVariantDark,
-    scrim = BALibroScrimDark,
-    inverseSurface = BALibroInverseSurfaceDark,
-    inverseOnSurface = BALibroInverseOnSurfaceDark,
-    inversePrimary = BALibroInversePrimaryDark,
-    surfaceDim = BALibroSurfaceDimDark,
-    surfaceBright = BALibroSurfaceBrightDark,
-    surfaceContainerLowest = BALibroSurfaceContainerLowestDark,
-    surfaceContainerLow = BALibroSurfaceContainerLowDark,
-    surfaceContainer = BALibroSurfaceContainerDark,
-    surfaceContainerHigh = BALibroSurfaceContainerHighDark,
-    surfaceContainerHighest = BALibroSurfaceContainerHighestDark
-)
+private fun colorSchemeDe(c: BiblioAndesColors, dark: Boolean): ColorScheme {
+    return if (dark) {
+        darkColorScheme(
+            primary = c.primary, onPrimary = c.onPrimary,
+            primaryContainer = c.pSoft, onPrimaryContainer = c.pText,
+            secondary = c.accent, onSecondary = c.onPrimary,
+            secondaryContainer = c.pSoft, onSecondaryContainer = c.pText,
+            tertiary = c.ok, onTertiary = c.surface,
+            tertiaryContainer = c.okBg, onTertiaryContainer = c.ok,
+            error = c.bad, onError = c.onBad,
+            errorContainer = c.badBg, onErrorContainer = c.bad,
+            background = c.bg, onBackground = c.ink,
+            surface = c.surface, onSurface = c.ink,
+            surfaceVariant = c.track, onSurfaceVariant = c.ink2,
+            outline = c.line, outlineVariant = c.line2
+        )
+    } else {
+        lightColorScheme(
+            primary = c.primary, onPrimary = c.onPrimary,
+            primaryContainer = c.pSoft, onPrimaryContainer = c.pText,
+            secondary = c.accent, onSecondary = c.onPrimary,
+            secondaryContainer = c.pSoft, onSecondaryContainer = c.pText,
+            tertiary = c.ok, onTertiary = c.surface,
+            tertiaryContainer = c.okBg, onTertiaryContainer = c.ok,
+            error = c.bad, onError = c.onBad,
+            errorContainer = c.badBg, onErrorContainer = c.bad,
+            background = c.bg, onBackground = c.ink,
+            surface = c.surface, onSurface = c.ink,
+            surfaceVariant = c.track, onSurfaceVariant = c.ink2,
+            outline = c.line, outlineVariant = c.line2
+        )
+    }
+}
 
 private val BiblioAndesShapes = Shapes(
-    extraSmall = RoundedCornerShape(8.dp),
-    small = RoundedCornerShape(12.dp),
+    extraSmall = RoundedCornerShape(10.dp),
+    small = RoundedCornerShape(14.dp),
     medium = RoundedCornerShape(16.dp),
-    large = RoundedCornerShape(24.dp),
-    extraLarge = RoundedCornerShape(32.dp)
+    large = RoundedCornerShape(20.dp),
+    extraLarge = RoundedCornerShape(28.dp)
 )
 
 @Composable
 fun BiblioAndesTheme(darkTheme: Boolean, content: @Composable () -> Unit) {
-    MaterialTheme(
-        colorScheme = if (darkTheme) DarkColors else LightColors,
-        shapes = BiblioAndesShapes,
-        typography = BiblioAndesTypography,
-        content = content
-    )
+    val colores = if (darkTheme) DarkBiblioAndesColors else LightBiblioAndesColors
+    CompositionLocalProvider(LocalBiblioAndesColors provides colores) {
+        MaterialTheme(
+            colorScheme = colorSchemeDe(colores, darkTheme),
+            shapes = BiblioAndesShapes,
+            typography = BiblioAndesTypography,
+            content = content
+        )
+    }
 }

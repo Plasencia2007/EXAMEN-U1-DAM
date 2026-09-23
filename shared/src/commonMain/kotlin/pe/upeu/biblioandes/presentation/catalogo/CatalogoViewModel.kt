@@ -82,7 +82,9 @@ class CatalogoViewModel(
             categorias = DatosSimulados.categorias,
             categoriaSeleccionada = categoriaSeleccionada,
             textoBusqueda = textoBusqueda,
-            libros = librosFiltrados
+            libros = librosFiltrados,
+            totalLibros = todosLosLibros.size,
+            conteoPorCategoria = todosLosLibros.groupingBy { it.categoria }.eachCount()
         )
     }
 }

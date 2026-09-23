@@ -14,8 +14,8 @@ import pe.upeu.biblioandes.domain.model.Prestamo
 object DatosSimulados {
 
     val estudiante = Estudiante(
-        "E-2291", "Diego Huamán Ccama",
-        "Ingeniería de Sistemas", "diego.huaman@correo.pe"
+        "202412796", "Jhonsons Plasencia Valdez",
+        "Ingeniería de Sistemas", "jhonsonsplasencia25@gmail.com"
     )
 
     val categorias = listOf("Programación", "Matemática", "Redes", "Gestión", "Literatura")
