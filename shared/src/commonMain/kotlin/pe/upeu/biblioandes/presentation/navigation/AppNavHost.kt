@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import pe.upeu.biblioandes.presentation.catalogo.CatalogoScreen
 
 /**
  * Pila de navegación propia: una lista de [Screen] donde el último elemento
@@ -57,7 +58,10 @@ fun AppNavHost(backStack: BackStack, modifier: Modifier = Modifier) {
     ) { pantalla ->
         when (pantalla) {
             is Screen.Inicio -> PantallaPendiente("Inicio")
-            is Screen.Catalogo -> PantallaPendiente("Catálogo")
+            is Screen.Catalogo -> CatalogoScreen(
+                modifier = Modifier.fillMaxSize(),
+                onLibroSeleccionado = { libro -> backStack.navegarA(Screen.DetalleLibro(libro.id)) }
+            )
             is Screen.Prestamos -> PantallaPendiente("Mis préstamos")
             is Screen.Perfil -> PantallaPendiente("Perfil")
             is Screen.DetalleLibro -> PantallaPendiente("Detalle del libro ${pantalla.libroId}")

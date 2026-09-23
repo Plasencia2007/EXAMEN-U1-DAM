@@ -1,6 +1,7 @@
 package pe.upeu.biblioandes.di
 
 import org.koin.core.context.startKoin
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.module
 import pe.upeu.biblioandes.data.repository.BibliotecaRepositoryFake
@@ -9,9 +10,14 @@ import pe.upeu.biblioandes.domain.usecase.CalcularEstadoPrestamoUseCase
 import pe.upeu.biblioandes.domain.usecase.ObtenerCatalogoUseCase
 import pe.upeu.biblioandes.domain.usecase.ObtenerPrestamosUseCase
 import pe.upeu.biblioandes.domain.usecase.SolicitarPrestamoUseCase
+import pe.upeu.biblioandes.presentation.catalogo.CatalogoViewModel
 
 val dataModule = module {
-    single<BibliotecaRepository> { BibliotecaRepositoryFake() }
+    // Se expone también el tipo concreto para que la pantalla de catálogo
+    // pueda accionar la bandera de error simulado (RF-02), sin que el resto
+    // de la app (casos de uso) dependa de nada distinto a la interfaz.
+    single { BibliotecaRepositoryFake() }
+    single<BibliotecaRepository> { get<BibliotecaRepositoryFake>() }
 }
 
 val domainModule = module {
@@ -22,7 +28,9 @@ val domainModule = module {
 }
 
 /** Se completa en cada rama de presentación con los ViewModel de esa pantalla. */
-val presentationModule = module {}
+val presentationModule = module {
+    viewModel { CatalogoViewModel(get(), get()) }
+}
 
 fun initKoin(config: KoinAppDeclaration? = null) {
     startKoin {
