@@ -47,6 +47,7 @@ kotlin {
             // androidContext() es una funcion de koin-android que androidApp necesita
             // resolver en compilacion, no solo en tiempo de ejecucion.
             api(libs.koin.android)
+            implementation(libs.androidx.activity.compose)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -59,6 +60,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.datetime)
             // api: initKoin() y el expect val platformModule exponen tipos de koin-core
             // en su firma publica; androidApp e iosApp los consumen directamente.
             api(libs.koin.core)
