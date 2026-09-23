@@ -1,7 +1,7 @@
 # BiblioAndes
 
 Examen Parcial — Unidad 1, Versión B — Desarrollo de Aplicaciones Móviles (UPeU)
-Estudiante: **Plasencia Valdez** · Repositorio: `EXAMEN-U1-DAM`
+Estudiante: **Jhonsons Plasencia Valdez** (202412796) · Repositorio: `EXAMEN-U1-DAM`
 
 Aplicación KMP (Android + iOS) para consultar el catálogo de la biblioteca
 BiblioAndes y gestionar los préstamos de un estudiante. Todos los datos
@@ -62,9 +62,16 @@ nunca en un composable:
 - El estado de error del catálogo se simula con una bandera en
   `BibliotecaRepositoryFake`, expuesta a Koin además de la interfaz de
   dominio, para que únicamente la pantalla de catálogo pueda accionarla.
-- Tema Material 3 propio (paleta terracota/verde-teal/rosa, inspirada en
-  libros y textiles andinos) con modo claro/oscuro conmutable desde Perfil
-  (RF-06) y aplicado de inmediato a toda la app.
+- Tema Material 3 propio (paleta azul marino editorial + crema cálido con
+  acento cobre) calcado del prototipo de diseño entregado, con tokens
+  semánticos propios (`BiblioAndesColors`: hero, feature, track, chev,
+  badLine, etc.) porque Material 3 no tiene roles para todos ellos. Modo
+  claro/oscuro conmutable desde el botón de cada cabecera y desde Perfil
+  (RF-06), aplicado de inmediato a toda la app.
+- Cada pantalla dibuja su propia cabecera (eyebrow + título + botón de
+  tema) en vez de una TopAppBar compartida, para replicar fielmente el
+  prototipo. Componentes de "lomo de libro" (`LomoMonograma`/`LomoPortada`)
+  con color y monograma deterministicos por libro.
 
 ## Flujo de Git
 
