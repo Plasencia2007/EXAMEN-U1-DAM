@@ -7,7 +7,9 @@ data class Libro(
     val anio: Int,
     val categoria: String,
     val sede: String,
-    val ejemplaresDisponibles: Int
+    val ejemplaresDisponibles: Int,
+    /** SC-D: editorial del libro, se muestra bajo el autor en catálogo y detalle. */
+    val editorial: String
 ) {
     /** RN-02 (lectura): un libro sin ejemplares no puede solicitarse. */
     val estaDisponible: Boolean

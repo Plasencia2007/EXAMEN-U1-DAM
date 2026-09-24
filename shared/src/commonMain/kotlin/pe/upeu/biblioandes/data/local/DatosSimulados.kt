@@ -22,29 +22,29 @@ object DatosSimulados {
 
     val libros = listOf(
         Libro(1, "Kotlin en profundidad", "M. Salazar",
-            2023, "Programación", "Central", 3),
+            2023, "Programación", "Central", 3, "Editorial Andina"),
         Libro(2, "Estructuras de datos", "R. Peña",
-            2021, "Programación", "Central", 0),
+            2021, "Programación", "Central", 0, "Editorial Andina"),
         Libro(3, "Cálculo aplicado", "L. Ortega",
-            2019, "Matemática", "Sede Norte", 2),
+            2019, "Matemática", "Sede Norte", 2, "Fondo Editorial UPeU"),
         Libro(4, "Redes de computadoras", "A. Medina",
-            2022, "Redes", "Sede Sur", 4),
+            2022, "Redes", "Sede Sur", 4, "Editorial Andina"),
         Libro(5, "Seguridad en redes", "P. Ríos",
-            2024, "Redes", "Central", 0),
+            2024, "Redes", "Central", 0, "Editorial Andina"),
         Libro(6, "Gestión de proyectos", "S. Delgado",
-            2021, "Gestión", "Sede Norte", 2),
+            2021, "Gestión", "Sede Norte", 2, "Fondo Editorial UPeU"),
         Libro(7, "Álgebra lineal", "C. Vargas",
-            2020, "Matemática", "Sede Sur", 1),
+            2020, "Matemática", "Sede Sur", 1, "Fondo Editorial UPeU"),
         Libro(8, "Cien años de soledad", "G. García Márquez",
-            1967, "Literatura", "Central", 5),
+            1967, "Literatura", "Central", 5, "Editorial Sudamericana"),
         Libro(9, "Don Quijote de la Mancha", "M. de Cervantes",
-            1605, "Literatura", "Sede Norte", 2),
+            1605, "Literatura", "Sede Norte", 2, "Ediciones Cátedra"),
         Libro(10, "Programación funcional en Kotlin", "J. Reyes",
-            2022, "Programación", "Sede Sur", 1),
+            2022, "Programación", "Sede Sur", 1, "Editorial Andina"),
         Libro(11, "Administración de redes Linux", "F. Quispe",
-            2023, "Redes", "Sede Norte", 3),
+            2023, "Redes", "Sede Norte", 3, "Editorial Andina"),
         Libro(12, "Liderazgo y gestión de equipos", "N. Alvarado",
-            2020, "Gestión", "Central", 0)
+            2020, "Gestión", "Central", 0, "Fondo Editorial UPeU")
     )
 
     // Fechas ajustadas respecto al día de la evaluación: los dos préstamos
