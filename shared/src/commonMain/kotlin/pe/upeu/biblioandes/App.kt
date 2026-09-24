@@ -10,13 +10,16 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,8 +32,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.koin.compose.KoinContext
+import org.koin.compose.viewmodel.koinViewModel
+import pe.upeu.biblioandes.domain.usecase.LIMITE_PRESTAMOS_ACTIVOS
 import pe.upeu.biblioandes.presentation.navigation.AppNavHost
+import pe.upeu.biblioandes.presentation.navigation.BarraNavegacionViewModel
 import pe.upeu.biblioandes.presentation.navigation.DESTINOS
+import pe.upeu.biblioandes.presentation.navigation.Screen
 import pe.upeu.biblioandes.presentation.navigation.rememberBackStack
 import pe.upeu.biblioandes.presentation.theme.BiblioAndesTheme
 import pe.upeu.biblioandes.presentation.theme.LocalBiblioAndesColors
@@ -62,10 +69,15 @@ fun App() = KoinContext {
 }
 @Composable
 private fun BarraNavegacionInferior(
-    destinoActual: pe.upeu.biblioandes.presentation.navigation.Screen,
-    onDestinoSeleccionado: (pe.upeu.biblioandes.presentation.navigation.Screen) -> Unit
+    destinoActual: Screen,
+    onDestinoSeleccionado: (Screen) -> Unit,
+    // SC-B: el conteo de préstamos activos se lee del dominio (ObtenerPrestamosUseCase
+    // vía BarraNavegacionViewModel), nunca se recalcula ni se hardcodea aquí.
+    viewModel: BarraNavegacionViewModel = koinViewModel()
 ) {
     val colores = LocalBiblioAndesColors.current
+    LaunchedEffect(destinoActual) { viewModel.recargar() }
+    val prestamosActivos = viewModel.prestamosActivosCount
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -99,6 +111,25 @@ private fun BarraNavegacionInferior(
                         contentDescription = null,
                         tint = if (seleccionado) colores.pText else colores.ink2
                     )
+                    if (destino.screen is Screen.Prestamos && prestamosActivos > 0) {
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .size(16.dp)
+                                .background(
+                                    if (prestamosActivos >= LIMITE_PRESTAMOS_ACTIVOS) colores.bad else colores.accent,
+                                    CircleShape
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                "$prestamosActivos",
+                                color = androidx.compose.ui.graphics.Color.White,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 9.sp
+                            )
+                        }
+                    }
                 }
                 Text(
                     text = destino.screen.titulo,
