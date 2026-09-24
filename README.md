@@ -73,6 +73,31 @@ nunca en un composable:
   prototipo. Componentes de "lomo de libro" (`LomoMonograma`/`LomoPortada`)
   con color y monograma deterministicos por libro.
 
+## Solicitud de cambio (Parte II) — SC-B
+
+Rama `sc-b-plasencia`, creada desde `develop`. Agrega una insignia numérica
+sobre el ícono "Mis préstamos" de la barra inferior con la cantidad de
+préstamos Activos (se pone roja al llegar al límite), y deshabilita
+"Solicitar préstamo" en el detalle cuando el estudiante ya alcanzó
+`LIMITE_PRESTAMOS_ACTIVOS`. Ambas lecturas de RN-01 pasan por
+`ObtenerPrestamosUseCase` — el número 3 no está duplicado en ningún
+composable. Verificado en el emulador: la insignia sube de 2 a 3 y cambia
+de color al solicitar un tercer préstamo, y un cuarto libro nuevo muestra
+el botón deshabilitado con "Límite de préstamos alcanzado".
+
+**Nota de arquitectura detectada durante la prueba**: `PrestamosViewModel`
+y `CatalogoViewModel` no se recargan automáticamente al revisitar su
+pantalla después de una acción hecha en otra pantalla (por ejemplo, Mis
+préstamos no refleja un préstamo solicitado desde Detalle hasta que se
+cambia de filtro o se repite la acción localmente), porque cada ViewModel
+mantiene su propia copia en memoria sin observar el repositorio de forma
+reactiva. `BarraNavegacionViewModel` sí se refresca porque se diseñó a
+propósito con un `LaunchedEffect` por cada navegación. Es una limitación
+preexistente de la app (no introducida por SC-B) y quedaría resuelta
+convirtiendo `BibliotecaRepositoryFake` a exponer un `Flow`/`StateFlow`
+observado por cada ViewModel, si se pide como una futura solicitud de
+cambio.
+
 ## Flujo de Git
 
 `main` solo recibe fusiones de `develop`. Cada funcionalidad se desarrolló en
