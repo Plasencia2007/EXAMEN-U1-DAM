@@ -73,6 +73,16 @@ nunca en un composable:
   prototipo. Componentes de "lomo de libro" (`LomoMonograma`/`LomoPortada`)
   con color y monograma deterministicos por libro.
 
+## Solicitud de cambio (Parte II) — SC-A
+
+Rama `sc-a-plasencia`, creada desde `develop`. Agrega un chip "Solo
+disponibles" al catálogo (icono de filtros en la cabecera), que oculta los
+libros con `ejemplaresDisponibles == 0` y se combina con el filtro de
+categoría y la búsqueda ya existentes. El filtro se resuelve por completo en
+`CatalogoViewModel.publicarContenidoFiltrado()`; ningún composable decide
+qué libro se muestra. Verificado en el emulador: 12 → 9 títulos al activarlo,
+los 3 libros sin stock desaparecen y el contador indica "solo disponibles".
+
 ## Flujo de Git
 
 `main` solo recibe fusiones de `develop`. Cada funcionalidad se desarrolló en
