@@ -25,6 +25,7 @@ class CatalogoViewModel(
     private var todosLosLibros: List<Libro> = emptyList()
     private var categoriaSeleccionada: String? = null
     private var textoBusqueda: String = ""
+    private var soloDisponibles: Boolean = false
 
     var uiState: CatalogoUiState by mutableStateOf(CatalogoUiState.Cargando)
         private set
@@ -54,6 +55,12 @@ class CatalogoViewModel(
         publicarContenidoFiltrado()
     }
 
+    /** SC-A: alterna el filtro "Solo disponibles", combinable con categoría y búsqueda. */
+    fun alternarSoloDisponibles() {
+        soloDisponibles = !soloDisponibles
+        publicarContenidoFiltrado()
+    }
+
     private fun cargar() {
         uiState = CatalogoUiState.Cargando
         viewModelScope.launch {
@@ -73,6 +80,7 @@ class CatalogoViewModel(
         val filtroTexto = normalizarTexto(textoBusqueda)
         val librosFiltrados = todosLosLibros
             .filter { categoriaSeleccionada == null || it.categoria == categoriaSeleccionada }
+            .filter { !soloDisponibles || it.estaDisponible }
             .filter {
                 filtroTexto.isBlank() ||
                     normalizarTexto(it.titulo).contains(filtroTexto) ||
@@ -84,7 +92,8 @@ class CatalogoViewModel(
             textoBusqueda = textoBusqueda,
             libros = librosFiltrados,
             totalLibros = todosLosLibros.size,
-            conteoPorCategoria = todosLosLibros.groupingBy { it.categoria }.eachCount()
+            conteoPorCategoria = todosLosLibros.groupingBy { it.categoria }.eachCount(),
+            soloDisponibles = soloDisponibles
         )
     }
 }

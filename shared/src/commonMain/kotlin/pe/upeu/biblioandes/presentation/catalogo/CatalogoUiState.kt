@@ -14,7 +14,9 @@ sealed interface CatalogoUiState {
         /** Total sin filtrar, para el chip "Todas" (independiente de la búsqueda). */
         val totalLibros: Int,
         /** Conteo por categoría sin filtrar, para el número de cada chip. */
-        val conteoPorCategoria: Map<String, Int>
+        val conteoPorCategoria: Map<String, Int>,
+        /** SC-A: si está activo, oculta del listado los libros sin ejemplares disponibles. */
+        val soloDisponibles: Boolean = false
     ) : CatalogoUiState {
         val estaVacio: Boolean get() = libros.isEmpty()
     }
