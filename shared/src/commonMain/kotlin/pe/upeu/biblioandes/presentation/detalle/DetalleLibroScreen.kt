@@ -132,6 +132,8 @@ private fun DetalleContenido(
                     )
                     Text(libro.titulo, style = MaterialTheme.typography.headlineMedium, color = colores.ink)
                     Text("por ${libro.autor}", color = colores.ink2, fontSize = 16.sp)
+                    // SC-D: editorial mostrada bajo el autor.
+                    Text(libro.editorial, color = colores.ink3, fontSize = 13.sp)
                 }
 
                 Row(

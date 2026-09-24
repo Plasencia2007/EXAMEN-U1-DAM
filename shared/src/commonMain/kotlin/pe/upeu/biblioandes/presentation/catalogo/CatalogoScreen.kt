@@ -253,6 +253,8 @@ private fun FilaLibro(libro: Libro, onClick: () -> Unit) {
         Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(libro.titulo, style = MaterialTheme.typography.titleMedium, color = colores.ink)
             Text("${libro.autor} · ${libro.categoria}", style = MaterialTheme.typography.bodyMedium, color = colores.ink2)
+            // SC-D: editorial mostrada bajo el autor.
+            Text(libro.editorial, style = MaterialTheme.typography.bodySmall, color = colores.ink3)
             InsigniaDisponibilidad(libro, Modifier.padding(top = 2.dp))
         }
         Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = colores.chev)
