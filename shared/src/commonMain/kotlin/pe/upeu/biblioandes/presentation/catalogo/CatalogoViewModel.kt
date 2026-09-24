@@ -6,6 +6,7 @@ import kotlinx.coroutines.launch
 import pe.upeu.biblioandes.data.repository.BibliotecaRepositoryFake
 import pe.upeu.biblioandes.data.local.DatosSimulados
 import pe.upeu.biblioandes.domain.model.Libro
+import pe.upeu.biblioandes.domain.model.OrdenCatalogo
 import pe.upeu.biblioandes.domain.usecase.ObtenerCatalogoUseCase
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,6 +26,7 @@ class CatalogoViewModel(
     private var todosLosLibros: List<Libro> = emptyList()
     private var categoriaSeleccionada: String? = null
     private var textoBusqueda: String = ""
+    private var ordenSeleccionado: OrdenCatalogo = OrdenCatalogo.TITULO
 
     var uiState: CatalogoUiState by mutableStateOf(CatalogoUiState.Cargando)
         private set
@@ -54,10 +56,16 @@ class CatalogoViewModel(
         publicarContenidoFiltrado()
     }
 
+    /** SC-C: cambia el criterio de orden y vuelve a pedirle el catálogo ya ordenado al dominio. */
+    fun seleccionarOrden(orden: OrdenCatalogo) {
+        ordenSeleccionado = orden
+        cargar()
+    }
+
     private fun cargar() {
         uiState = CatalogoUiState.Cargando
         viewModelScope.launch {
-            runCatching { obtenerCatalogo() }
+            runCatching { obtenerCatalogo(ordenSeleccionado) }
                 .onSuccess { libros ->
                     repositorioFake.forzarErrorCatalogo = false
                     todosLosLibros = libros
@@ -84,7 +92,8 @@ class CatalogoViewModel(
             textoBusqueda = textoBusqueda,
             libros = librosFiltrados,
             totalLibros = todosLosLibros.size,
-            conteoPorCategoria = todosLosLibros.groupingBy { it.categoria }.eachCount()
+            conteoPorCategoria = todosLosLibros.groupingBy { it.categoria }.eachCount(),
+            ordenSeleccionado = ordenSeleccionado
         )
     }
 }
