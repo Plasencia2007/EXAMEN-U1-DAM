@@ -65,6 +65,7 @@ fun CatalogoScreen(
         onCategoriaSeleccionada = viewModel::seleccionarCategoria,
         onReintentar = viewModel::reintentar,
         onForzarError = viewModel::forzarErrorYRecargar,
+        onSoloDisponiblesToggle = viewModel::alternarSoloDisponibles,
         onLibroSeleccionado = onLibroSeleccionado
     )
 }
@@ -79,6 +80,7 @@ private fun CatalogoContenido(
     onCategoriaSeleccionada: (String?) -> Unit,
     onReintentar: () -> Unit,
     onForzarError: () -> Unit,
+    onSoloDisponiblesToggle: () -> Unit,
     onLibroSeleccionado: (Libro) -> Unit
 ) {
     val colores = LocalBiblioAndesColors.current
@@ -104,15 +106,24 @@ private fun CatalogoContenido(
                         onValorCambia = onBusquedaCambiada,
                         modifier = Modifier.weight(1f)
                     )
+                    val soloDisponiblesActivo = estado.soloDisponibles
                     Box(
                         modifier = Modifier
                             .size(52.dp)
                             .clip(RoundedCornerShape(16.dp))
-                            .background(colores.primary)
-                            .clickableSimple { onCategoriaSeleccionada(null) },
+                            .background(if (soloDisponiblesActivo) colores.ok else colores.primary)
+                            .clickableSimple(onSoloDisponiblesToggle),
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(Icons.Default.Tune, contentDescription = "Filtros y orden", tint = colores.onPrimary)
+                        Icon(
+                            Icons.Default.Tune,
+                            contentDescription = if (soloDisponiblesActivo) {
+                                "Mostrando solo disponibles, toca para ver todos"
+                            } else {
+                                "Mostrar solo libros disponibles"
+                            },
+                            tint = colores.onPrimary
+                        )
                     }
                 }
             }
@@ -148,7 +159,8 @@ private fun CatalogoContenido(
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 14.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    val etiquetaConteo = if (estado.libros.size == 1) "1 título" else "${estado.libros.size} títulos"
+                    val base = if (estado.libros.size == 1) "1 título" else "${estado.libros.size} títulos"
+                    val etiquetaConteo = if (estado.soloDisponibles) "$base · solo disponibles" else base
                     Text(etiquetaConteo, style = MaterialTheme.typography.labelMedium, color = colores.ink2)
                     Text("Orden: título", style = MaterialTheme.typography.bodySmall, color = colores.ink3)
                 }
