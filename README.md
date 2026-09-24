@@ -73,6 +73,16 @@ nunca en un composable:
   prototipo. Componentes de "lomo de libro" (`LomoMonograma`/`LomoPortada`)
   con color y monograma deterministicos por libro.
 
+## Solicitud de cambio (Parte II) — SC-C
+
+Rama `sc-c-plasencia`, creada desde `develop`. Agrega un selector "Orden:
+Título / Año" en el catálogo (`DropdownMenu` junto al contador de
+resultados). El ordenamiento (`sortedBy`) vive en
+`ObtenerCatalogoUseCase` (dominio), no en el ViewModel ni en la pantalla;
+el criterio elegido se guarda en `CatalogoUiState.Contenido.ordenSeleccionado`.
+Verificado en el emulador: cambiar a "Año" reordena las 12 tarjetas del
+catálogo completo, conservando el filtro de categoría activo.
+
 ## Flujo de Git
 
 `main` solo recibe fusiones de `develop`. Cada funcionalidad se desarrolló en
