@@ -6,7 +6,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import pe.upeu.biblioandes.domain.model.EstadoPrestamo
+import pe.upeu.biblioandes.domain.usecase.LIMITE_PRESTAMOS_ACTIVOS
 import pe.upeu.biblioandes.domain.usecase.ObtenerCatalogoUseCase
+import pe.upeu.biblioandes.domain.usecase.ObtenerPrestamosUseCase
 import pe.upeu.biblioandes.domain.usecase.SolicitarPrestamoUseCase
 
 /**
@@ -14,10 +17,16 @@ import pe.upeu.biblioandes.domain.usecase.SolicitarPrestamoUseCase
  * para ubicar el libro por id en vez de exponer un método nuevo en el
  * repositorio: el catálogo completo ya vive en memoria y es una sola
  * llamada barata con el retardo simulado.
+ *
+ * SC-B: también usa [ObtenerPrestamosUseCase] para saber si el estudiante ya
+ * alcanzó LIMITE_PRESTAMOS_ACTIVOS y deshabilitar el botón de forma
+ * proactiva, leyendo el límite desde el dominio (misma constante que aplica
+ * SolicitarPrestamoUseCase) en vez de duplicar el número "3" en la UI.
  */
 class DetalleLibroViewModel(
     private val libroId: Int,
     private val obtenerCatalogo: ObtenerCatalogoUseCase,
+    private val obtenerPrestamos: ObtenerPrestamosUseCase,
     private val solicitarPrestamo: SolicitarPrestamoUseCase
 ) : ViewModel() {
 
@@ -35,7 +44,15 @@ class DetalleLibroViewModel(
         uiState = DetalleLibroUiState.Cargando
         viewModelScope.launch {
             val libro = obtenerCatalogo().find { it.id == libroId }
-            uiState = libro?.let { DetalleLibroUiState.Contenido(it) } ?: DetalleLibroUiState.NoEncontrado
+            uiState = if (libro != null) {
+                val prestamosActivos = obtenerPrestamos().count { it.estado is EstadoPrestamo.Activo }
+                DetalleLibroUiState.Contenido(
+                    libro = libro,
+                    limiteAlcanzado = prestamosActivos >= LIMITE_PRESTAMOS_ACTIVOS
+                )
+            } else {
+                DetalleLibroUiState.NoEncontrado
+            }
         }
     }
 

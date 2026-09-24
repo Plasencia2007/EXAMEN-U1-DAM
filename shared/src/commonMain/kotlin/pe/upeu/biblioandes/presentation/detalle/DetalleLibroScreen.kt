@@ -76,6 +76,7 @@ fun DetalleLibroScreen(
         is DetalleLibroUiState.Contenido -> DetalleContenido(
             modifier = modifier,
             libro = estado.libro,
+            limiteAlcanzado = estado.limiteAlcanzado,
             estadoSolicitud = estadoSolicitud,
             onVolver = onVolver,
             onVerPrestamos = onVerPrestamos,
@@ -90,6 +91,7 @@ fun DetalleLibroScreen(
 private fun DetalleContenido(
     modifier: Modifier,
     libro: Libro,
+    limiteAlcanzado: Boolean,
     estadoSolicitud: EstadoSolicitud,
     onVolver: () -> Unit,
     onVerPrestamos: () -> Unit,
@@ -224,7 +226,7 @@ private fun DetalleContenido(
                     Text("Solicitado · Ver mis préstamos", color = colores.ok, fontWeight = FontWeight.Bold, fontSize = 16.sp)
                 }
             } else {
-                val habilitado = libro.estaDisponible && estadoSolicitud !is EstadoSolicitud.Enviando
+                val habilitado = libro.estaDisponible && !limiteAlcanzado && estadoSolicitud !is EstadoSolicitud.Enviando
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -238,6 +240,9 @@ private fun DetalleContenido(
                     Text(
                         text = when {
                             !libro.estaDisponible -> "Sin ejemplares disponibles"
+                            // SC-B: RN-01 leída desde el dominio (limiteAlcanzado ya viene calculada
+                            // por DetalleLibroViewModel con ObtenerPrestamosUseCase), no re-declarada aquí.
+                            limiteAlcanzado -> "Límite de préstamos alcanzado"
                             estadoSolicitud is EstadoSolicitud.Enviando -> "Enviando..."
                             else -> "Solicitar préstamo"
                         },

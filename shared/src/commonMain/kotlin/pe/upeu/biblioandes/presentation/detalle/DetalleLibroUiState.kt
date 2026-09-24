@@ -5,7 +5,11 @@ import pe.upeu.biblioandes.domain.model.Libro
 /** Estados de interfaz del detalle de un libro (RF-03): carga, contenido y no encontrado. */
 sealed interface DetalleLibroUiState {
     data object Cargando : DetalleLibroUiState
-    data class Contenido(val libro: Libro) : DetalleLibroUiState
+    data class Contenido(
+        val libro: Libro,
+        /** SC-B: true si el estudiante ya tiene LIMITE_PRESTAMOS_ACTIVOS prestamos Activos (RN-01, leída del dominio). */
+        val limiteAlcanzado: Boolean
+    ) : DetalleLibroUiState
     data object NoEncontrado : DetalleLibroUiState
 }
 

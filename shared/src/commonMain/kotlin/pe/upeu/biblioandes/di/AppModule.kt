@@ -35,7 +35,7 @@ val domainModule = module {
 /** Se completa en cada rama de presentación con los ViewModel de esa pantalla. */
 val presentationModule = module {
     viewModel { CatalogoViewModel(get(), get()) }
-    viewModel { (libroId: Int) -> DetalleLibroViewModel(libroId, get(), get()) }
+    viewModel { (libroId: Int) -> DetalleLibroViewModel(libroId, get(), get(), get()) }
     viewModel { PrestamosViewModel(get(), get()) }
     viewModel { InicioViewModel(get(), get(), get()) }
 }
