@@ -73,6 +73,16 @@ nunca en un composable:
   prototipo. Componentes de "lomo de libro" (`LomoMonograma`/`LomoPortada`)
   con color y monograma deterministicos por libro.
 
+## Solicitud de cambio (Parte II) — SC-D
+
+Rama `sc-d-plasencia`, creada desde `develop`. Agrega `editorial: String`
+a `domain/model/Libro.kt`, completa las 12 editoriales en
+`DatosSimulados.kt`, y la muestra en una línea propia bajo el autor tanto
+en el catálogo (`FilaLibro`) como en el detalle. El cambio recorre las
+tres capas (dominio → datos → presentación) sin agregar lógica nueva a
+ningún ViewModel. Verificado en el emulador (Android) y compilación del
+módulo común para iOS.
+
 ## Flujo de Git
 
 `main` solo recibe fusiones de `develop`. Cada funcionalidad se desarrolló en
