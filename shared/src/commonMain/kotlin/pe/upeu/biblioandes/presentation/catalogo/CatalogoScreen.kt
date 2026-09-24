@@ -21,17 +21,23 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.RemoveCircleOutline
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -65,6 +71,7 @@ fun CatalogoScreen(
         onCategoriaSeleccionada = viewModel::seleccionarCategoria,
         onReintentar = viewModel::reintentar,
         onForzarError = viewModel::forzarErrorYRecargar,
+        onOrdenSeleccionado = viewModel::seleccionarOrden,
         onLibroSeleccionado = onLibroSeleccionado
     )
 }
@@ -79,6 +86,7 @@ private fun CatalogoContenido(
     onCategoriaSeleccionada: (String?) -> Unit,
     onReintentar: () -> Unit,
     onForzarError: () -> Unit,
+    onOrdenSeleccionado: (pe.upeu.biblioandes.domain.model.OrdenCatalogo) -> Unit,
     onLibroSeleccionado: (Libro) -> Unit
 ) {
     val colores = LocalBiblioAndesColors.current
@@ -150,7 +158,10 @@ private fun CatalogoContenido(
                 ) {
                     val etiquetaConteo = if (estado.libros.size == 1) "1 título" else "${estado.libros.size} títulos"
                     Text(etiquetaConteo, style = MaterialTheme.typography.labelMedium, color = colores.ink2)
-                    Text("Orden: título", style = MaterialTheme.typography.bodySmall, color = colores.ink3)
+                    SelectorOrden(
+                        ordenActual = estado.ordenSeleccionado,
+                        onOrdenSeleccionado = onOrdenSeleccionado
+                    )
                 }
 
                 if (estado.estaVacio) {
@@ -202,6 +213,42 @@ private fun CampoBusqueda(valor: String, onValorCambia: (String) -> Unit, modifi
                 cursorBrush = SolidColor(colores.primary),
                 modifier = Modifier.fillMaxWidth()
             )
+        }
+    }
+}
+
+/** SC-C: selector de orden (título/año); el estado de apertura del menú es UI pura, no de negocio. */
+@Composable
+private fun SelectorOrden(
+    ordenActual: pe.upeu.biblioandes.domain.model.OrdenCatalogo,
+    onOrdenSeleccionado: (pe.upeu.biblioandes.domain.model.OrdenCatalogo) -> Unit
+) {
+    val colores = LocalBiblioAndesColors.current
+    var expandido by remember { mutableStateOf(false) }
+    Box {
+        Row(
+            modifier = Modifier.clickableSimple { expandido = true },
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Text("Orden: ${ordenActual.etiqueta}", style = MaterialTheme.typography.bodySmall, color = colores.ink3)
+            Icon(
+                Icons.Default.ArrowDropDown,
+                contentDescription = "Cambiar orden",
+                tint = colores.ink3,
+                modifier = Modifier.size(16.dp)
+            )
+        }
+        DropdownMenu(expanded = expandido, onDismissRequest = { expandido = false }) {
+            pe.upeu.biblioandes.domain.model.OrdenCatalogo.entries.forEach { orden ->
+                DropdownMenuItem(
+                    text = { Text(orden.etiqueta) },
+                    onClick = {
+                        expandido = false
+                        onOrdenSeleccionado(orden)
+                    }
+                )
+            }
         }
     }
 }
